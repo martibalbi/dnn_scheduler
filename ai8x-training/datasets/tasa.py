@@ -7,6 +7,7 @@ from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader, Subset
 import h5py
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 
 import ai8x
@@ -29,12 +30,12 @@ class TASADataset(Dataset):
 
     def _load_data(self):
         if self.train:
-            train_indices_sorted = sorted(self.train_indices)[:1000]
+            train_indices_sorted = sorted(self.train_indices)[:100000]
             data = self.data_raw[train_indices_sorted]
             targets = self.targets_raw[train_indices_sorted]
             
         else:
-            test_indices_sorted = sorted(self.test_indices)[:200]
+            test_indices_sorted = sorted(self.test_indices)[:20000]
             data = self.data_raw[test_indices_sorted]
             targets = self.targets_raw[test_indices_sorted]
 
@@ -44,8 +45,16 @@ class TASADataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
-        input_data = self.data[idx]
-        output_data = self.targets[idx]
+        input_data = np.array(self.data[idx]).reshape(-1, 1)
+        output_data = np.array(self.targets[idx]).reshape(-1, 1)
+
+        input_scaler = MinMaxScaler(feature_range=(0, 1))
+        input_scaler.fit(input_data)
+        input_data = input_scaler.transform(input_data)
+
+        output_scaler = MinMaxScaler(feature_range=(0, 1))
+        output_scaler.fit(output_data)
+        output_data = output_scaler.transform(output_data)
 
         input_data = torch.tensor(input_data, dtype=torch.float32)
         output_data = torch.tensor(output_data, dtype=torch.float32)
@@ -55,6 +64,9 @@ class TASADataset(Dataset):
         
         if self.target_transform is not None:
             output_data = self.target_transform(output_data)
+
+        input_data = torch.tensor(input_data, dtype=torch.float32).squeeze(1)
+        output_data = torch.tensor(output_data, dtype=torch.float32).squeeze(1)
 
         return input_data, output_data
 
