@@ -9,14 +9,14 @@ import ai8x
 
 class DNN_Scheduler(nn.Module):
 
-    def __init__(self, num_classes=420, num_channels=1, dimensions=(12,1), bias=False, **kwargs):
+    def __init__(self, num_classes=420, num_channels=1, dimensions=(12,1), bias=False, scale=1., **kwargs):
         super().__init__()
 
-        self.layer1 = ai8x.FusedLinearReLU(in_features=dimensions[0],out_features=400,bias=bias)
-        self.layer2 = ai8x.FusedLinearReLU(in_features=400,out_features=512,bias=bias)
-        self.layer3 = ai8x.FusedLinearReLU(in_features=512,out_features=512,bias=bias)
-        self.layer4 = ai8x.FusedLinearReLU(in_features=512,out_features=450,bias=bias)
-        self.layer5 = ai8x.Linear(in_features=450, out_features=420,bias=bias,wide=True,**kwargs)
+        self.layer1 = ai8x.FusedLinearReLU(in_features=dimensions[0],out_features=int(400*scale),bias=bias)
+        self.layer2 = ai8x.FusedLinearReLU(in_features=int(400*scale),out_features=int(512*scale),bias=bias)
+        self.layer3 = ai8x.FusedLinearReLU(in_features=int(512*scale),out_features=int(512*scale),bias=bias)
+        self.layer4 = ai8x.FusedLinearReLU(in_features=int(512*scale),out_features=int(512*scale),bias=bias)
+        self.layer5 = ai8x.Linear(in_features=int(512*scale), out_features=420,bias=bias,wide=True,**kwargs)
 
     def forward(self, x):  # pylint: disable=arguments-differ
         """Forward prop"""
@@ -36,9 +36,21 @@ def dnn_scheduler(pretrained=False, **kwargs):
     assert not pretrained
     return DNN_Scheduler(**kwargs)
 
+def dnn_scheduler_s_0_5(pretrained=False, **kwargs):
+    """
+    Constructs a DNN_Scheduler model.
+    """
+    assert not pretrained
+    return DNN_Scheduler(scale=0.5, **kwargs)
+
 models = [
     {
         'name': 'dnn_scheduler',
+        'min_input': 1,
+        'dim': 1,
+    },
+    {
+        'name': 'dnn_scheduler_s_0_5',
         'min_input': 1,
         'dim': 1,
     },

@@ -1,0 +1,1 @@
+python train.py --lr 0.1 --optimizer Adam --regression --epochs 50 --deterministic --compress policies/schedule_dnn_schedule.yaml --qat-policy policies/qat_policy_dnn_scheduler.yaml --model dnn_scheduler_s_0_5 --dataset TASA --param-hist --device MAX78000
