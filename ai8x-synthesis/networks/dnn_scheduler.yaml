@@ -1,34 +1,29 @@
 ---
 # configuration for TASA
 
-arch: dnn_scheduler
+arch: dnn_scheduler_s_0_5
 dataset: TASA
 
 # Define layer parameters in order of the layer sequence
 layers:
   # Linear - 5 layers
-  - flatten: true
-    processors: 0x0000000000000fff # input channels before flatenning: 12
+  - processors: 0x0000000000000fff # input channels before flatenning: 12
     operation: MLP
     activate: ReLU
     out_offset: 0x4000
-  - flatten: true
-    processors: 0xffffffffffffffff
+  - processors: 0x000fffffffffffff
     operation: MLP
     out_offset: 0
     activate: ReLU
-  - flatten: true
-    processors: 0xffffffffffffffff
+  - processors: 0xffffffffffffffff
     operation: MLP
     out_offset: 0x4000
     activate: ReLU
-  - flatten: true
-    processors: 0xffffffffffffffff
+  - processors: 0xffffffffffffffff
     operation: MLP
     out_offset: 0
     activate: ReLU
-  - flatten: true
-    processors: 0xffffffffffffffff
+  - processors: 0xffffffffffffffff
     out_offset: 0x4000
     operation: MLP
     activate: None
