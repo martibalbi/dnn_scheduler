@@ -30,12 +30,12 @@ class TASADataset(Dataset):
 
     def _load_data(self):
         if self.train:
-            train_indices_sorted = sorted(self.train_indices)[:100000]
+            train_indices_sorted = sorted(self.train_indices)[:1000000]
             data = self.data_raw[train_indices_sorted]
             targets = self.targets_raw[train_indices_sorted]
             
         else:
-            test_indices_sorted = sorted(self.test_indices)[:20000]
+            test_indices_sorted = sorted(self.test_indices)[:200000]
             data = self.data_raw[test_indices_sorted]
             targets = self.targets_raw[test_indices_sorted]
 
