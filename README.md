@@ -16,7 +16,10 @@
 `tests/sample_dnn_scheduler.npy`: random input
 
 evaluation fails when running `python train.py --model dnn_scheduler --dataset TASA --evaluate --exp-load-weights-from ../ai8x-synthesis/dnn_q8.pth.tar -8 --device MAX78000 --workers=0`:
-  `Log file for this run: C:\dnn_scheduling\ai8x-training\logs\2024.03.28-113307\2024.03.28-113307.log
+
+```
+{
+Log file for this run: C:\dnn_scheduling\ai8x-training\logs\2024.03.28-113307\2024.03.28-113307.log
 Traceback (most recent call last):
   File "train.py", line 1901, in <module>
     main()
@@ -36,4 +39,6 @@ Traceback (most recent call last):
     return nll_loss(log_softmax(input, 1), target, weight, None, ignore_index, None, reduction)
   File "C:\Users\MBalbi2\AppData\Local\Programs\Python\Python38\lib\site-packages\torch\nn\functional.py", line 2388, in nll_loss
     ret = torch._C._nn.nll_loss(input, target, weight, _Reduction.get_enum(reduction), ignore_index)
-RuntimeError: 1D target tensor expected, multi-target not supported`
+RuntimeError: 1D target tensor expected, multi-target not supported
+}
+```
